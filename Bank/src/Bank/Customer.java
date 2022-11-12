@@ -23,8 +23,8 @@ class Customer {
         return account;
     }
 
-    public void changeName() {
-
+    public void setName(String name) {
+        this.name = name;
     }
 
     public void addAccount(Account a) {

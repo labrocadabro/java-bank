@@ -28,12 +28,28 @@ public class Bank {
         return customerList;
     }
 
-    public void changeName() {
-
+    public void setName(String name) {
+        this.name = name;
     }
 
-    public void addCustomer(String name) {
+    public Customer addCustomer(String name) {
         Customer newCustomer = new Customer(name);
-        customerList.add(newCustomer);
+        addCustomerToCustomerList(newCustomer);
+        return newCustomer;
+
+    }
+    private void addCustomerToCustomerList(Customer customer) {
+        customerList.add(customer);
+    }
+
+    public Account openAccount(Customer customer, double amount) {
+        Account newAccount = new Account(amount);
+        openAccountList.add(newAccount);
+        customer.addAccount(newAccount);
+        return newAccount;
+    }
+    public Account openAccount(Customer customer) {
+        Account newAccount = openAccount(customer, 0.00);
+        return newAccount;
     }
 }

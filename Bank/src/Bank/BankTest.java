@@ -6,7 +6,6 @@ import static org.junit.jupiter.api.Assertions.*;
 
 class BankTest {
     Bank bank = new Bank("Bank Brothers");
-
     @Test
     void addNewCustomer() {
         bank.addCustomer("Terry");
@@ -24,13 +23,36 @@ class BankTest {
         assertEquals(2, bank.getCustomerList().size());
     }
     @Test
-    void openNewAccount() {
-        bank.addCustomer("Terry");
-        assertEquals("Joe", bank.getCustomerList().get(0).getName());
-        assertEquals("Joe", bank.getCustomerList().get(1).getName());
-        assertNotEquals(bank.getCustomerList().get(0).getCustomerID(),
-                bank.getCustomerList().get(1).getCustomerID());
-        assertEquals(2, bank.getCustomerList().size());
+    void openNewAccountWithNoBalance() {
+        Customer terry = bank.addCustomer("Terry");
+        Account account = bank.openAccount(terry);
+        assertEquals(terry.getAccount(), account);
+        assertEquals(account.getCustomer(), terry);
+        assertEquals(bank.getCustomerList().get(0).getAccount(),
+                bank.getOpenAccountList().get(0));
+        assertEquals(bank.getOpenAccountList().get(0).getCustomer(),
+                bank.getCustomerList().get(0));
+    }
+    void openNewAccountWithNegativeBalance() {
+        Customer terry = bank.addCustomer("Terry");
+        Exception thrown = assertThrows(IllegalArgumentException.class,
+                () -> bank.openAccount(terry, -100.00));
+        String expectedMessage = "Balance cannot be negative";
+        assertEquals(expectedMessage, thrown.getMessage());
+        assertNull(terry.getAccount());
+    }
+    @Test
+    void openNewAccountWithBalance() {
+        Customer terry = bank.addCustomer("Terry");
+        Account account = bank.openAccount(terry, 100.00);
+        assertEquals(100.00, account.getBalance());
+        assertEquals(100.00, terry.getAccount().getBalance());
+        assertEquals(terry.getAccount(), account);
+        assertEquals(account.getCustomer(), terry);
+        assertEquals(bank.getCustomerList().get(0).getAccount(),
+                bank.getOpenAccountList().get(0));
+        assertEquals(bank.getOpenAccountList().get(0).getCustomer(),
+                bank.getCustomerList().get(0));
     }
     @Test
     void depositPositiveAmount() {
@@ -77,7 +99,7 @@ class BankTest {
         Account a = new Account();
         Customer c = new Customer("Joe");
         c.addAccount(a);
-        assertEquals(c, a.getAccountOwner());
+        assertEquals(c, a.getCustomer());
         assertEquals(a, c.getAccount());
     }
     @Test

@@ -9,6 +9,7 @@ class Account {
     private String accountType;
 
     public Account(double balance) {
+        if (balance < 0) throw new IllegalArgumentException("Balance cannot be negative");
         this.balance = balance;
     }
     public Account() {
@@ -23,7 +24,7 @@ class Account {
         return balance;
     }
 
-    public Customer getAccountOwner() {
+    public Customer getCustomer() {
         return accountOwner;
     }
 
